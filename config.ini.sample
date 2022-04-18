@@ -1,0 +1,13 @@
+[general]
+log_level: INFO
+
+[email]
+server: 
+port:
+user:
+passw:
+
+[joplin]
+server: 
+token: 
+notebook: 

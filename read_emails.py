@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from imaplib import IMAP4_SSL
 import email
+from email import policy
 import string
 from loguru import logger
 from imbox import Imbox
@@ -33,6 +34,10 @@ def check_email():
     mail_ids = []
     for block in data:
         mail_ids += block.split()
+    if len(mail_ids):
+        logger.info(f"Found {len(mail_ids)} mail(s).")
+    else:
+        logger.info('No mails found')
     return mail_ids
     
 def read_emails():
@@ -40,7 +45,7 @@ def read_emails():
     emails = []
     for i in email_ids:
         status, data = imap.fetch(i,'(RFC822)')
-        msg = email.message_from_bytes(data[0][1])
+        msg = email.message_from_bytes(data[0][1],policy=policy.default)
         email_message = {}
         attachments = []
         for part in msg.walk():
@@ -56,14 +61,18 @@ def read_emails():
         
         mail = Email(**email_message)
         emails.append(mail)
+        logger.info(f"email with subject: {email_message['subject']} is read.")
+        logger.debug(mail)
     return emails
 
 def delete_email(msg_id):
     imap.store(msg_id,'+FLAGS', '\\Deleted')
+    logger.info(f"{msg_id} is marked for deletion.")
 
 
 def expunge():
     imap.expunge()
+    logger.info('inbox expunged...')
 
 
 if __name__ == "__main__":
