@@ -1,9 +1,11 @@
 import configparser
+from pathlib import Path
 from dataclasses import dataclass
 import string
 
 conf = configparser.ConfigParser()
-conf.read('config.ini')
+config_file = Path(__file__).parent.joinpath('config.ini')
+conf.read(config_file)
 
 class GenConf:
     def __init__(self, conf) -> None:

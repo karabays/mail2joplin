@@ -1,12 +1,15 @@
 from loguru import logger
 from markdownify import markdownify as md
+from pathlib import Path
 
 from config import genConf
 from joplin import JoplinNote
 import read_emails
 
-logger.add('mail2joplin.log')
+log_file = Path(__file__).parent.joinpath('mail2joplin.log')
+logger.add(log_file)
 logger.info('Starting script.')
+
 emails = read_emails.read_emails()
 
 if emails:
